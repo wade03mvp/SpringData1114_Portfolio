@@ -17,6 +17,7 @@
                         $("#myform").find("#password").val(data.password);
                         $("#myform").find("#email").val(data.email);
                         $("#myform").find("#balance").val(data.balance);
+                        $("#msg").text("");
                         $("#add").attr("disabled", true);
                         $("#upt").attr("disabled", false);
                         $("#del").attr("disabled", false);
@@ -74,7 +75,9 @@
                 });
                 $("#username").blur(function () {
                     console.log($("#username").val());
-                    alert($("#upt").attr("disabled"));
+                    if (!$("#upt").is(":disabled")) {
+                        return;
+                    }
                     var username = $("#username").val();
                     $.get("${pageContext.request.contextPath}/mvc/portfolio/investor/duplicate/" + username, function (data, status) {
                         console.log(data);
