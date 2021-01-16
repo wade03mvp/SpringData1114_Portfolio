@@ -43,4 +43,36 @@ public class PriceController {
         return historicalQuotes;
     }
 
+    // 個股報價資訊(Watch List用)
+    @GetMapping(value = {"/refresh"})
+    @Transactional
+    public List<TStock> refresh() {
+        List<TStock> list = StreamSupport
+                .stream(service.gettStockRepository().findAll().spliterator(), false)
+                .collect(Collectors.toList());;
+        for (TStock tStock : list) {
+            // 取得報價資訊
+            try {
+                Stock stock = YahooFinance.get(tStock.getSymbol());
+                tStock.setChangePrice(stock.getQuote().getChange());
+                tStock.setChangeInPercent(stock.getQuote().getChangeInPercent());
+                tStock.setPreClosed(stock.getQuote().getPreviousClose());
+                tStock.setPrice(stock.getQuote().getPrice());
+                tStock.setTransactionDate(stock.getQuote().getLastTradeTime().getTime());
+                tStock.setVolumn(stock.getQuote().getVolume());
+                // 更新報價
+                service.gettStockRepository().updatePrice(
+                        tStock.getId(),
+                        tStock.getChangePrice(),
+                        tStock.getChangeInPercent(),
+                        tStock.getPreClosed(),
+                        tStock.getPrice(),
+                        tStock.getTransactionDate(),
+                        tStock.getVolumn());
+            } catch (Exception e) {
+                //e.printStackTrace();
+            }
+        }
+        return list;
+    }
 }
