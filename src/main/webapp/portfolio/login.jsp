@@ -48,7 +48,20 @@
                         }
                     });
                 });
-                
+                $("#username").blur(function () {
+                    console.log($("#username").val());
+                    var username = $("#username").val();
+                    $.get("${pageContext.request.contextPath}/mvc/portfolio/investor/duplicate/" + username, function (data, status) {
+                        console.log(data);
+                        if (data) {
+                            $("#add").attr("disabled", true);
+                            $("#msg").text("重複名稱");
+                        } else {
+                            $("#add").attr("disabled", false);
+                            $("#msg").text("");
+                        }
+                    });
+                });
             });
 
         </script>
@@ -78,11 +91,11 @@
                                 Register Form
                             </h1>
                         </legend>
-                        <input type="text" name="username" placeholder="Username"><p />
-                        <input type="password" name="password" placeholder="Password"><p />
+                        <input type="text" id="username" name="username" placeholder="Username">&nbsp;&nbsp;<span id="msg" style="color: red"></span><p />
+                        <input type="password" id="password" name="password" placeholder="Password"><p />
                         <input id="email" name="email" placeholder="Email"/><p />
                         <input id="balance" name="balance" placeholder="Balance" type="number"/><p />
-                        <button id="add" type="button" class="pure-button pure-button-primary">Register</button>
+                        <button id="add" type="button" class="pure-button pure-button-primary" disabled>Register</button>
                     </fieldset>
                 </form>
             </td>

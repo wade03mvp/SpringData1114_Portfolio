@@ -17,6 +17,10 @@
                         $("#myform").find("#password").val(data.password);
                         $("#myform").find("#email").val(data.email);
                         $("#myform").find("#balance").val(data.balance);
+                        $("#add").attr("disabled", true);
+                        $("#upt").attr("disabled", false);
+                        $("#del").attr("disabled", false);
+                        $("#username").attr("readonly", true);
                     });
                 });
                 $("#add").on("click", function () {
@@ -32,6 +36,7 @@
                         processData: false,
                         success: function (resposeJsonObject) {
                             //alert(JSON.stringify(resposeJsonObject));
+                            resetForm();
                             table_list();
                         }
                     });
@@ -44,10 +49,11 @@
                         type: "PUT",
                         contentType: "application/json; charset=utf-8",
                         data: jsonStr,
-                        async: true, 
+                        async: true,
                         cache: false,
                         processData: false,
                         success: function (resposeJsonObject) {
+                            resetForm();
                             table_list();
                         }
                     });
@@ -61,15 +67,39 @@
                         cache: false,
                         processData: false,
                         success: function (resposeJsonObject) {
+                            resetForm();
                             table_list();
                         }
                     });
                 });
-                 
+                $("#username").blur(function () {
+                    console.log($("#username").val());
+                    alert($("#upt").attr("disabled"));
+                    var username = $("#username").val();
+                    $.get("${pageContext.request.contextPath}/mvc/portfolio/investor/duplicate/" + username, function (data, status) {
+                        console.log(data);
+                        if (data) {
+                            $("#add").attr("disabled", true);
+                            $("#msg").text("重複名稱");
+                        } else {
+                            $("#add").attr("disabled", false);
+                            $("#msg").text("");
+                        }
+                    });
+                });
                 // 資料列表
                 table_list();
             });
-
+            // myform重製方法
+            function resetForm() {
+                $("#myform").get(0).reset();
+                $("#msg").text("");
+                $("#username").attr("readonly", false);
+                $("#add").attr("disabled", true);
+                $("#upt").attr("disabled", true);
+                $("#del").attr("disabled", true);
+            }
+            // 資料列表
             function table_list() {
                 $.get("${pageContext.request.contextPath}/mvc/portfolio/investor/", function (datas, status) {
                     console.log("Datas: " + datas);
@@ -109,17 +139,17 @@
                             <form id="myform" class="pure-form">
                                 <fieldset>
                                     <legend> <h2 class="content-subhead">資料維護</h2></legend>
-                                    
+
                                     <input id="id" vslue="0"   name="id" placeholder="ID" readonly="true"/><p />
-                                    <input id="username" name="username" placeholder="username"/><p />
+                                    <input id="username" name="username" placeholder="username"/>&nbsp;&nbsp;<span id="msg" style="color: red"></span><p />
                                     <input id="password" name="password" placeholder="password"/><p />
                                     <input id="email" name="email" placeholder="email"/><p />
                                     <input id="balance" name="balance" placeholder="balance" type="number"/><p />
-                                    
-                                    <button id="add" type="button" class="pure-button pure-button-primary">新增</button>
-                                    <button id="upt" type="button" class="pure-button pure-button-primary">修改</button>
-                                    <button id="del" type="button" class="pure-button pure-button-primary">刪除</button>
-                                    
+
+                                    <button id="add" type="button" class="pure-button pure-button-primary" disabled>新增</button>
+                                    <button id="upt" type="button" class="pure-button pure-button-primary" disabled>修改</button>
+                                    <button id="del" type="button" class="pure-button pure-button-primary" disabled>刪除</button>
+
                                 </fieldset>
                             </form>
                         </div>
