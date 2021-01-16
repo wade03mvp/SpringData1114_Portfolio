@@ -6,6 +6,7 @@ import com.spring.mvc.portfolio.service.EmailService;
 import com.spring.mvc.portfolio.service.PortfolioService;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -57,5 +58,51 @@ public class InvestorController {
     @GetMapping(value = {"/", "/query"})
     public List<Investor> queryAll() {
         return service.getInvestorRepository().findAll();
+    }
+    
+    // 查詢單筆(根據 id)
+    @GetMapping(value = {"/{id}"})
+    public Investor get(@PathVariable("id") Optional<Integer> id) {
+        return service.getInvestorRepository().findOne(id.get());
+    }
+    
+    // 單筆修改(根據 id)
+    @PutMapping(value = {"/{id}"})
+    @Transactional
+    public Boolean update(@PathVariable("id") Optional<Integer> id, 
+                          @RequestBody Map<String, String> jsonMap) {
+        // 是否有 id
+        if(!id.isPresent()) {
+            return false;
+        }
+        // 該筆資料是否存在 ?
+        if(get(id) == null) {
+            return false;
+        }
+        // 修改資料
+        service.getInvestorRepository().update(
+                id.get(), 
+                jsonMap.get("username"), 
+                jsonMap.get("password"), 
+                jsonMap.get("email"), 
+                Integer.parseInt(jsonMap.get("balance")));
+        return true;
+    }
+    
+    // 單筆刪除(根據 id)
+    @DeleteMapping(value = {"/{id}"})
+    @Transactional
+    public Boolean update(@PathVariable("id") Optional<Integer> id) {
+        // 是否有 id
+        if(!id.isPresent()) {
+            return false;
+        }
+        // 該筆資料是否存在 ?
+        if(get(id) == null) {
+            return false;
+        }
+        // 刪除資料
+        service.getInvestorRepository().delete(id.get());
+        return true;
     }
 }
