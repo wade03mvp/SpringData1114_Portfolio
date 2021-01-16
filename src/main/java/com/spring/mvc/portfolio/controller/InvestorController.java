@@ -23,16 +23,21 @@ public class InvestorController {
     @Autowired
     private PortfolioService service;
     
+    @Autowired
+    private EmailService emailService;
     // 新增
     @PostMapping(value = {"/", "/add"})
     public Investor add(@RequestBody Map<String, String> jsonMap) {
         // jsonMap 就是前端傳來的 json 字串所轉換後的集合資料
+        // {"username":"admin","password":"1234","email":"vincentjava@yahoo.com.tw","balance":"200"}
         Investor investor = new Investor();
         investor.setUsername(jsonMap.get("username"));
         investor.setPassword(jsonMap.get("password"));
         investor.setEmail(jsonMap.get("email"));
         investor.setBalance(Integer.parseInt(jsonMap.get("balance")));
         investor.setPass(Boolean.FALSE);
+        // 設定 email 認證碼
+        investor.setCode(Integer.toHexString(investor.hashCode()));
         // 建立 watch
         Watch watch = new Watch();
         watch.setInvestor(investor);
@@ -41,6 +46,9 @@ public class InvestorController {
         service.getInvestorRepository().save(investor);
         // 存檔 Watch
         service.getWatchRepository().save(watch);
+        
+        // 發送認證信件
+        emailService.send(investor);
         
         return investor;
     }
