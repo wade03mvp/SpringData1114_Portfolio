@@ -48,10 +48,10 @@
                         amount = prompt("請輸入購買股數(請以1000股為單位)？", "1000");
                         if (amount == null)
                             return;
-                        if (parseInt(amount) % 1000 != 0) {
-                            alert('請輸入1000的倍數(1張=1000股)');
-                            return;
-                        }
+//                        if (parseInt(amount) % 1000 != 0) {
+//                            alert('請輸入1000的倍數(1張=1000股)');
+//                            return;
+//                        }
                         $.ajax({
                             url: "${pageContext.request.contextPath}/mvc/portfolio/order/buy/" + tstock_id + "/" + amount,
                             type: "GET",
