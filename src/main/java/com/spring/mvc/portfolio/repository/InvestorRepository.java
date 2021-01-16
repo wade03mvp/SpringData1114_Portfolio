@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository(value = "investorRepository")
 public interface InvestorRepository extends JpaRepository<Investor, Integer>{
-    @Query(value = "Select i From Investor i Where i.pass='true' And i.username=?1")
+    @Query(value = "Select * From Investor i Where i.username=?1 FETCH FIRST 1 ROWS ONLY", nativeQuery = true)
     public Investor getInvestor(@Param("username") String username);
     
     @Transactional

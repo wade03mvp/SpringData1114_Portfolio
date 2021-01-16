@@ -31,6 +31,7 @@ public class InvestorController {
     public Investor add(@RequestBody Map<String, String> jsonMap) {
         // jsonMap 就是前端傳來的 json 字串所轉換後的集合資料
         // {"username":"admin","password":"1234","email":"vincentjava@yahoo.com.tw","balance":"200"}
+        // 建立 Investor
         Investor investor = new Investor();
         investor.setUsername(jsonMap.get("username"));
         investor.setPassword(jsonMap.get("password"));
@@ -104,5 +105,14 @@ public class InvestorController {
         // 刪除資料
         service.getInvestorRepository().delete(id.get());
         return true;
+    }
+    
+    @GetMapping("/duplicate/{username}")
+    public Boolean isDuplicateUsername(@PathVariable("username") Optional<String> username) {
+        if(username.isPresent()) {
+           Investor investor = service.getInvestorRepository().getInvestor(username.get());
+           return investor == null ? false : true;
+        }
+        return false;
     }
 }
