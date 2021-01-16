@@ -61,7 +61,7 @@ public class SendEmail {
         Message message = new MimeMessage(session);
         
         // 發文者 一定會是你的 google email
-        InternetAddress ia = new InternetAddress("dwyanewade03mvp@gmail.com"); // 你的 Gmail
+        InternetAddress ia = new InternetAddress(googleGmail); // 你的 Gmail
         ia.setPersonal(personal);
         message.setFrom(ia);
         
