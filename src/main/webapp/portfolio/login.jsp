@@ -22,6 +22,7 @@
                 $("#add").on("click", function () {
                     var jsonObj = $('#myform').serializeObject(); // 將表單資料封裝序列
                     var jsonStr = JSON.stringify(jsonObj); // 將物件資料轉為 Json 字串
+                    console.log(jsonStr);
                     $.ajax({
                         url: "${pageContext.request.contextPath}/mvc/portfolio/investor/",
                         type: "POST",
@@ -47,9 +48,8 @@
                         }
                     });
                 });
-
             });
-            
+
         </script>
 
     </head>
@@ -69,9 +69,14 @@
                 </form>
             </td>
             <td valign="top">
-                <form id="myform" class="pure-form" method="post" action="${pageContext.request.contextPath}/mvc/portfolio/login">
+                <form id="myform" class="pure-form" method="post">
                     <fieldset>
-                        <legend><h1><img src="${pageContext.request.contextPath}/images/user.png" width="40" valign="middle"> Register Form</h1></legend>
+                        <legend>
+                            <h1>
+                                <img src="${pageContext.request.contextPath}/images/user.png" width="40" valign="middle"> 
+                                Register Form
+                            </h1>
+                        </legend>
                         <input type="text" name="username" placeholder="Username"><p />
                         <input type="password" name="password" placeholder="Password"><p />
                         <input id="email" name="email" placeholder="Email"/><p />
